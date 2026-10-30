@@ -1,0 +1,26 @@
+[
+  {
+    "resolution_id": "RES-2026-000001",
+    "exception_id": "EXC-2026-000011",
+    "actor_role": "SYSTEM_ADMIN",
+    "actor_id": "AUTO_POLICY_ENGINE",
+    "resolution_type": "AUTO_ADJUSTED",
+    "notes": "Auto-applied bank wire expense adjustment of $15.00 per treasury policy.",
+    "financial_adjustment_amount": 15.0,
+    "previous_state": "OPEN",
+    "new_state": "RESOLVED",
+    "resolved_at": "2026-10-22T18:00:00Z"
+  },
+  {
+    "resolution_id": "RES-2026-000002",
+    "exception_id": "EXC-2026-000012",
+    "actor_role": "SYSTEM_ADMIN",
+    "actor_id": "AUTO_POLICY_ENGINE",
+    "resolution_type": "AUTO_ADJUSTED",
+    "notes": "Auto-applied bank wire expense adjustment of $10.00 per treasury policy.",
+    "financial_adjustment_amount": 10.0,
+    "previous_state": "OPEN",
+    "new_state": "RESOLVED",
+    "resolved_at": "2026-10-22T18:00:00Z"
+  }
+]

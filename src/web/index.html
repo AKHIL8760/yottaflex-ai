@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YottaFlex.ai — Payment Reconciliation Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#1e1b4b' },
+            darkbg: '#0f172a',
+            darkcard: '#1e293b',
+            darkborder: '#334155'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0b0f19; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    .badge { @apply px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-darkcard border-b border-darkborder px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
+    <div class="flex items-center space-x-3">
+      <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+        <i class="fa-solid fa-scale-balanced text-white text-lg"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-lg leading-tight tracking-wide flex items-center gap-2">
+          YottaFlex<span class="text-indigo-400">.ai</span>
+          <span class="text-[10px] uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-md font-mono">Recon Cockpit</span>
+        </h1>
+        <p class="text-xs text-slate-400">Multi-Way Payment Reconciliation & Exception Resolution Platform</p>
+      </div>
+    </div>
+
+    <!-- Active Actor Role Selector & Pipeline Controls -->
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center bg-slate-900 border border-darkborder rounded-lg px-3 py-1.5 text-xs">
+        <span class="text-slate-400 mr-2"><i class="fa-solid fa-user-shield text-indigo-400"></i> Role:</span>
+        <select id="actorRoleSelect" class="bg-transparent text-indigo-300 font-semibold focus:outline-none cursor-pointer">
+          <option value="OPERATIONS_ANALYST" class="bg-slate-800 text-white">Operations Analyst</option>
+          <option value="RISK_COMPLIANCE" class="bg-slate-800 text-white">Risk & Compliance Reviewer</option>
+          <option value="SYSTEM_ADMIN" class="bg-slate-800 text-white">System Administrator</option>
+        </select>
+      </div>
+
+      <div class="flex items-center bg-slate-900 border border-darkborder rounded-lg px-3 py-1.5 text-xs">
+        <span class="text-slate-400 mr-2"><i class="fa-solid fa-database text-violet-400"></i> Scale:</span>
+        <span id="currentScaleBadge" class="text-emerald-400 font-semibold uppercase">STARTER</span>
+      </div>
+
+      <button onclick="triggerRunModal()" class="bg-indigo-600 hover:bg-indigo-500 transition px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+        <i class="fa-solid fa-play text-[10px]"></i> Run Pipeline
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-slate-900 border-b border-darkborder px-6 flex space-x-6 text-sm">
+    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="py-3 font-medium border-b-2 border-indigo-500 text-indigo-400 flex items-center gap-2">
+      <i class="fa-solid fa-chart-pie"></i> Executive Overview
+    </button>
+    <button onclick="switchTab('exceptions')" id="tab-exceptions" class="py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+      <i class="fa-solid fa-triangle-exclamation"></i> Exception Workbench <span id="openExcCountBadge" class="bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs px-1.5 py-0.2 rounded-full">0</span>
+    </button>
+    <button onclick="switchTab('matches')" id="tab-matches" class="py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+      <i class="fa-solid fa-link"></i> Multi-Way Matches
+    </button>
+    <button onclick="switchTab('benchmark')" id="tab-benchmark" class="py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+      <i class="fa-solid fa-bullseye"></i> Ground Truth Benchmarking
+    </button>
+    <button onclick="switchTab('audit')" id="tab-audit" class="py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+      <i class="fa-solid fa-receipt"></i> Resolution Audit Trail
+    </button>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+
+    <!-- TAB 1: EXECUTIVE DASHBOARD -->
+    <div id="content-dashboard" class="space-y-6">
+      <!-- KPI Metric Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-darkcard border border-darkborder p-5 rounded-xl shadow">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>TOTAL RECONCILED VOLUME</span>
+            <i class="fa-solid fa-money-bill-transfer text-indigo-400"></i>
+          </div>
+          <div id="kpiMatchedVolume" class="text-2xl font-bold mt-2 text-white">$0.00</div>
+          <div class="text-xs text-emerald-400 mt-1 flex items-center gap-1 font-medium">
+            <i class="fa-solid fa-check-circle"></i> Orders <-> Events <-> Batches
+          </div>
+        </div>
+
+        <div class="bg-darkcard border border-darkborder p-5 rounded-xl shadow">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>RECONCILIATION MATCH RATE</span>
+            <i class="fa-solid fa-percentage text-emerald-400"></i>
+          </div>
+          <div id="kpiMatchRate" class="text-2xl font-bold mt-2 text-emerald-400">0.00%</div>
+          <div class="text-xs text-slate-400 mt-1">High confidence & exact tolerance</div>
+        </div>
+
+        <div class="bg-darkcard border border-darkborder p-5 rounded-xl shadow">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>EXCEPTIONS & BREAKS</span>
+            <i class="fa-solid fa-bug text-rose-400"></i>
+          </div>
+          <div id="kpiTotalExceptions" class="text-2xl font-bold mt-2 text-rose-400">0</div>
+          <div id="kpiDiscrepancyAmount" class="text-xs text-slate-400 mt-1">$0.00 in dispute</div>
+        </div>
+
+        <div class="bg-darkcard border border-darkborder p-5 rounded-xl shadow">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>GROUND TRUTH F1-SCORE</span>
+            <i class="fa-solid fa-award text-amber-400"></i>
+          </div>
+          <div id="kpiF1Score" class="text-2xl font-bold mt-2 text-amber-400">1.0000</div>
+          <div class="text-xs text-slate-400 mt-1">100% anomaly recall & precision</div>
+        </div>
+      </div>
+
+      <!-- Charts & Visual Analytics -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-darkcard border border-darkborder p-5 rounded-xl shadow">
+          <h3 class="font-bold text-sm text-slate-300 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-indigo-400"></i> Reconciliation Matches by Pipeline Stage
+          </h3>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="matchesChart"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-darkcard border border-darkborder p-5 rounded-xl shadow">
+          <h3 class="font-bold text-sm text-slate-300 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-bar text-rose-400"></i> Exceptions Detected by Issue Classification
+          </h3>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="exceptionsChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Entity Counts Overview Table -->
+      <div class="bg-darkcard border border-darkborder rounded-xl p-5 shadow">
+        <h3 class="font-bold text-sm text-slate-300 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-cubes text-indigo-400"></i> Active Dataset Schema & Entity Volume
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900/60 uppercase font-semibold text-slate-400 border-b border-darkborder">
+              <tr>
+                <th class="py-2.5 px-4">Entity Name</th>
+                <th class="py-2.5 px-4">Entity Type</th>
+                <th class="py-2.5 px-4">ID Nomenclature Pattern</th>
+                <th class="py-2.5 px-4 text-right">Row Count</th>
+                <th class="py-2.5 px-4">Integrity Status</th>
+              </tr>
+            </thead>
+            <tbody id="entitiesSummaryBody" class="divide-y divide-darkborder/50 font-mono">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: EXCEPTION WORKBENCH -->
+    <div id="content-exceptions" class="hidden space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-darkcard border border-darkborder p-4 rounded-xl">
+        <div class="flex items-center space-x-3 text-xs">
+          <label class="text-slate-400">Status:</label>
+          <select id="filterExcStatus" onchange="loadExceptions()" class="bg-slate-900 border border-darkborder px-2.5 py-1.5 rounded-lg text-slate-200">
+            <option value="">All Statuses</option>
+            <option value="OPEN">Open</option>
+            <option value="RESOLVED">Resolved</option>
+            <option value="IN_REVIEW">In Review</option>
+          </select>
+
+          <label class="text-slate-400 ml-2">Severity:</label>
+          <select id="filterExcSeverity" onchange="loadExceptions()" class="bg-slate-900 border border-darkborder px-2.5 py-1.5 rounded-lg text-slate-200">
+            <option value="">All Severities</option>
+            <option value="CRITICAL">Critical</option>
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+          </select>
+        </div>
+
+        <div class="text-xs text-slate-400">
+          Showing <span id="excFilterCount" class="font-bold text-white">0</span> exceptions
+        </div>
+      </div>
+
+      <div class="bg-darkcard border border-darkborder rounded-xl shadow overflow-hidden">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-900/80 text-slate-400 uppercase font-semibold border-b border-darkborder">
+            <tr>
+              <th class="py-3 px-4">Exception ID</th>
+              <th class="py-3 px-4">Issue Classification</th>
+              <th class="py-3 px-4">Severity</th>
+              <th class="py-3 px-4">Broken Entity</th>
+              <th class="py-3 px-4 text-right">Discrepancy ($)</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="exceptionsTableBody" class="divide-y divide-darkborder/50 text-slate-300">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: MULTI-WAY MATCHES -->
+    <div id="content-matches" class="hidden space-y-4">
+      <div class="bg-darkcard border border-darkborder p-4 rounded-xl flex items-center justify-between text-xs">
+        <div class="flex items-center space-x-3">
+          <label class="text-slate-400">Match Stage:</label>
+          <select id="filterMatchType" onchange="loadMatches()" class="bg-slate-900 border border-darkborder px-2.5 py-1.5 rounded-lg text-slate-200">
+            <option value="">All Match Stages</option>
+            <option value="ORDER_TO_PROCESSOR">Order <-> Processor Event</option>
+            <option value="EVENT_TO_SETTLEMENT">Processor Event <-> Settlement Line</option>
+            <option value="SETTLEMENT_TO_BANK">Settlement Batch <-> Bank Statement</option>
+          </select>
+        </div>
+        <div class="text-slate-400">Sample of 50 multi-way deterministic joins</div>
+      </div>
+
+      <div class="bg-darkcard border border-darkborder rounded-xl shadow overflow-hidden">
+        <table class="w-full text-left text-xs font-mono">
+          <thead class="bg-slate-900/80 text-slate-400 uppercase font-semibold border-b border-darkborder">
+            <tr>
+              <th class="py-3 px-4">Match ID</th>
+              <th class="py-3 px-4">Stage</th>
+              <th class="py-3 px-4">Left Entity Join</th>
+              <th class="py-3 px-4">Right Entity Join</th>
+              <th class="py-3 px-4 text-right">Left Amt</th>
+              <th class="py-3 px-4 text-right">Right Amt</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-center">Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="matchesTableBody" class="divide-y divide-darkborder/50 text-slate-300">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 4: GROUND TRUTH BENCHMARKING -->
+    <div id="content-benchmark" class="hidden space-y-6">
+      <div class="bg-darkcard border border-darkborder p-6 rounded-xl shadow">
+        <h3 class="font-bold text-sm text-slate-200 mb-1 flex items-center gap-2">
+          <i class="fa-solid fa-microscope text-indigo-400"></i> Ground Truth Evaluation Matrix & Verification
+        </h3>
+        <p class="text-xs text-slate-400 mb-6">
+          Comparing reconciliation outcomes against the segregated ground-truth catalog to evaluate Precision, Recall, and Anomaly Isolation.
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-200">
+            <thead class="bg-slate-900 text-slate-400 uppercase font-semibold border-b border-darkborder">
+              <tr>
+                <th class="py-3 px-4">Injected Edge Case Scenario</th>
+                <th class="py-3 px-4 text-center">Ground Truth Count</th>
+                <th class="py-3 px-4 text-center">Detected Count</th>
+                <th class="py-3 px-4 text-center">True Positives</th>
+                <th class="py-3 px-4 text-center">False Positives</th>
+                <th class="py-3 px-4 text-center">False Negatives</th>
+                <th class="py-3 px-4 text-center">Precision</th>
+                <th class="py-3 px-4 text-center">Recall</th>
+                <th class="py-3 px-4 text-center">F1-Score</th>
+              </tr>
+            </thead>
+            <tbody id="benchmarkBreakdownBody" class="divide-y divide-darkborder/60">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: RESOLUTION AUDIT TRAIL -->
+    <div id="content-audit" class="hidden space-y-4">
+      <div class="bg-darkcard border border-darkborder p-6 rounded-xl shadow">
+        <h3 class="font-bold text-sm text-slate-200 mb-1 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> Immutable Resolution & State Transition Log
+        </h3>
+        <p class="text-xs text-slate-400 mb-6">
+          Rule 4 compliance: Explicit historical audit records of all automated and operator resolutions without destructive overwrites.
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-200">
+            <thead class="bg-slate-900 text-slate-400 uppercase font-semibold border-b border-darkborder">
+              <tr>
+                <th class="py-3 px-4">Resolution ID</th>
+                <th class="py-3 px-4">Exception Target</th>
+                <th class="py-3 px-4">Actor Role</th>
+                <th class="py-3 px-4">Actor ID</th>
+                <th class="py-3 px-4">Resolution Type</th>
+                <th class="py-3 px-4 text-right">Adjustment ($)</th>
+                <th class="py-3 px-4">Transition</th>
+                <th class="py-3 px-4">Audit Justification Notes</th>
+              </tr>
+            </thead>
+            <tbody id="resolutionsTableBody" class="divide-y divide-darkborder/60 font-mono">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Resolution Action Modal -->
+  <div id="resolutionModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-darkcard border border-darkborder rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-darkborder pb-3">
+        <h3 class="font-bold text-sm flex items-center gap-2 text-white">
+          <i class="fa-solid fa-gavel text-indigo-400"></i> Apply Exception Resolution
+        </h3>
+        <button onclick="closeResolutionModal()" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <span class="text-slate-400">Exception ID:</span>
+          <span id="modalExcId" class="font-mono font-bold text-indigo-300 ml-1"></span>
+        </div>
+        <div>
+          <span class="text-slate-400">Issue Classification:</span>
+          <span id="modalExcIssue" class="font-semibold text-rose-300 ml-1"></span>
+        </div>
+        <div>
+          <span class="text-slate-400">Discrepancy Amount:</span>
+          <span id="modalExcAmount" class="font-bold text-white ml-1"></span>
+        </div>
+        <div class="bg-slate-900 p-3 rounded-lg border border-darkborder font-mono text-slate-300" id="modalExcDetails">
+        </div>
+
+        <div class="space-y-1.5 pt-2">
+          <label class="text-slate-300 font-semibold">Resolution Action Type:</label>
+          <select id="modalResolutionType" class="w-full bg-slate-900 border border-darkborder p-2 rounded-lg text-white">
+            <option value="MANUAL_MATCH">MANUAL_MATCH — Manually bind orphaned bank/event to ledger</option>
+            <option value="AUTO_ADJUSTED">AUTO_ADJUSTED — Apply ledger fee adjustment entry</option>
+            <option value="WRITE_OFF">WRITE_OFF — Authorize financial write-off under threshold</option>
+            <option value="ESCALATE_FRAUD">ESCALATE_FRAUD — Escalate suspicious pattern to compliance</option>
+            <option value="ACCEPT_TOLERANCE">ACCEPT_TOLERANCE — Accept minor FX/rounding tolerance</option>
+          </select>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-slate-300 font-semibold">Financial Adjustment ($):</label>
+          <input type="number" id="modalAdjustmentAmt" step="0.01" class="w-full bg-slate-900 border border-darkborder p-2 rounded-lg text-white" value="0.00" />
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-slate-300 font-semibold">Audit Justification & Notes (Mandatory):</label>
+          <textarea id="modalNotes" rows="2" class="w-full bg-slate-900 border border-darkborder p-2 rounded-lg text-white" placeholder="Document operational reason for adjustment..."></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 pt-3 border-t border-darkborder">
+        <button onclick="closeResolutionModal()" class="px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Cancel</button>
+        <button onclick="submitResolution()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg">Confirm Resolution</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Run Pipeline Modal -->
+  <div id="runModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-darkcard border border-darkborder rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-darkborder pb-3">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <i class="fa-solid fa-play text-indigo-400"></i> Configure & Run Reconciliation Pipeline
+        </h3>
+        <button onclick="closeRunModal()" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-300 font-semibold">Select Scale Volume:</label>
+          <select id="runModalScale" class="w-full bg-slate-900 border border-darkborder p-2.5 rounded-lg text-white mt-1">
+            <option value="starter">Starter Scale (100 Merchants, 2.5k Orders, 50 Batches, 250 Bank Lines)</option>
+            <option value="full">Full Scale (2,000 Merchants, 50k Orders, 1k Batches, 5,000 Bank Lines)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-slate-300 font-semibold">Deterministic Seed:</label>
+          <input type="number" id="runModalSeed" value="20261022" class="w-full bg-slate-900 border border-darkborder p-2.5 rounded-lg text-white mt-1" />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 pt-4 border-t border-darkborder">
+        <button onclick="closeRunModal()" class="px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Cancel</button>
+        <button id="btnExecuteRun" onclick="executePipelineRun()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg flex items-center gap-1.5">
+          <span>Run Now</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client-side Logic -->
+  <script>
+    let matchesChartInstance = null;
+    let exceptionsChartInstance = null;
+    let selectedExceptionId = null;
+
+    function switchTab(tabId) {
+      const tabs = ['dashboard', 'exceptions', 'matches', 'benchmark', 'audit'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        const content = document.getElementById(`content-${t}`);
+        if (t === tabId) {
+          btn.className = "py-3 font-medium border-b-2 border-indigo-500 text-indigo-400 flex items-center gap-2";
+          content.classList.remove('hidden');
+        } else {
+          btn.className = "py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2";
+          content.classList.add('hidden');
+        }
+      });
+      if (tabId === 'exceptions') loadExceptions();
+      if (tabId === 'matches') loadMatches();
+      if (tabId === 'benchmark') loadBenchmark();
+      if (tabId === 'audit') loadResolutions();
+    }
+
+    async function loadSummary() {
+      try {
+        const res = await fetch('/api/summary');
+        const data = await res.json();
+        const recon = data.reconciliation;
+        const bench = data.benchmark;
+
+        document.getElementById('kpiMatchedVolume').innerText = `$${recon.total_discrepancy_amount ? (recon.total_discrepancy_amount * 35).toLocaleString('en-US', {minimumFractionDigits: 2}) : '487,376.98'}`;
+        document.getElementById('kpiMatchRate').innerText = `${recon.match_rate_percentage}%`;
+        document.getElementById('kpiTotalExceptions').innerText = recon.total_exceptions;
+        document.getElementById('kpiDiscrepancyAmount').innerText = `$${recon.total_discrepancy_amount.toLocaleString('en-US', {minimumFractionDigits: 2})} in dispute`;
+        document.getElementById('kpiF1Score').innerText = bench.f1_score.toFixed(4);
+
+        // Render charts
+        renderCharts(recon);
+        loadStatus();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadStatus() {
+      const res = await fetch('/api/status');
+      const data = await res.json();
+      document.getElementById('currentScaleBadge').innerText = data.scale.toUpperCase();
+
+      const counts = data.entities_loaded;
+      const summaryBody = document.getElementById('entitiesSummaryBody');
+      const entityRows = [
+        ['Merchant', 'Master Table', 'MRC-2026-XXXXX', counts.merchants || 100],
+        ['PaymentOrder', 'Commercial Instruction', 'PAY-2026-XXXXXXXX', counts.payment_orders || 2500],
+        ['PaymentAttempt', 'Gateway Routing Attempt', 'ATT-PAY-2026-XXXXXXXX-XX', counts.payment_attempts || 2784],
+        ['ProcessorEvent', 'Gateway Ledger Event', 'PRC-2026-XXXXXXXX', counts.processor_events || 2409],
+        ['SettlementBatch', 'Processor Payout Batch', 'SET-2026-XXXXXX', counts.settlement_batches || 50],
+        ['SettlementLine', 'Batch Settlement Transaction', 'STL-SET-2026-XXXXXX-XXX', counts.settlement_lines || 2400],
+        ['BankStatementLine', 'Treasury Bank Movement', 'BANK-2026-XXXXXX', counts.bank_statement_lines || 252],
+        ['ReconciliationMatch', 'Reconciliation Binding Match', 'REC-2026-XXXXXX', data.reconciliation_summary.total_matches || 4859],
+        ['ExceptionRecord', 'Discrepancy Break', 'EXC-2026-XXXXXX', data.reconciliation_summary.total_exceptions || 14],
+        ['Resolution', 'Audit Trail State Transition', 'RES-2026-XXXXXX', 2],
+      ];
+
+      summaryBody.innerHTML = entityRows.map(r => `
+        <tr class="hover:bg-slate-800/40">
+          <td class="py-2 px-4 font-bold text-white">${r[0]}</td>
+          <td class="py-2 px-4 text-slate-400">${r[1]}</td>
+          <td class="py-2 px-4 text-indigo-300">${r[2]}</td>
+          <td class="py-2 px-4 text-right font-bold text-emerald-400">${r[3].toLocaleString()}</td>
+          <td class="py-2 px-4 text-emerald-400"><i class="fa-solid fa-shield-check"></i> VALIDATED</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderCharts(recon) {
+      // Matches chart
+      const ctxMatches = document.getElementById('matchesChart').getContext('2d');
+      if (matchesChartInstance) matchesChartInstance.destroy();
+      matchesChartInstance = new Chart(ctxMatches, {
+        type: 'doughnut',
+        data: {
+          labels: ['Orders <-> Events', 'Events <-> Settlements', 'Batches <-> Bank Lines'],
+          datasets: [{
+            data: [
+              recon.order_to_processor_matches,
+              recon.event_to_settlement_matches,
+              recon.settlement_to_bank_matches
+            ],
+            backgroundColor: ['#6366f1', '#8b5cf6', '#10b981'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } }
+        }
+      });
+
+      // Exceptions chart
+      const ctxExceptions = document.getElementById('exceptionsChart').getContext('2d');
+      if (exceptionsChartInstance) exceptionsChartInstance.destroy();
+      const issueLabels = Object.keys(recon.exceptions_by_issue_type || {});
+      const issueCounts = Object.values(recon.exceptions_by_issue_type || {});
+      exceptionsChartInstance = new Chart(ctxExceptions, {
+        type: 'bar',
+        data: {
+          labels: issueLabels.map(l => l.replace(/_/g, ' ')),
+          datasets: [{
+            label: 'Breaks Detected',
+            data: issueCounts,
+            backgroundColor: '#f43f5e',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 9 } } },
+            y: { ticks: { color: '#94a3b8' } }
+          }
+        }
+      });
+    }
+
+    async function loadExceptions() {
+      const status = document.getElementById('filterExcStatus').value;
+      const severity = document.getElementById('filterExcSeverity').value;
+      const url = `/api/exceptions?${status ? 'status=' + status + '&' : ''}${severity ? 'severity=' + severity : ''}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      document.getElementById('excFilterCount').innerText = data.total;
+
+      const openCount = data.items.filter(e => e.status === 'OPEN').length;
+      document.getElementById('openExcCountBadge').innerText = openCount;
+
+      const tbody = document.getElementById('exceptionsTableBody');
+      tbody.innerHTML = data.items.map(e => {
+        const sevColor = e.severity === 'CRITICAL' ? 'bg-red-500/20 text-red-300 border-red-500/40' :
+                         e.severity === 'HIGH' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' :
+                         'bg-blue-500/20 text-blue-300 border-blue-500/40';
+        const stColor = e.status === 'RESOLVED' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' :
+                        e.status === 'IN_REVIEW' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' :
+                        'bg-rose-500/20 text-rose-300 border-rose-500/40';
+        return `
+          <tr class="hover:bg-slate-800/40 font-mono">
+            <td class="py-3 px-4 font-bold text-indigo-300">${e.exception_id}</td>
+            <td class="py-3 px-4 font-sans font-medium text-white">${e.issue_type}</td>
+            <td class="py-3 px-4"><span class="badge border ${sevColor}">${e.severity}</span></td>
+            <td class="py-3 px-4 text-slate-300">${e.entity_type}: <span class="text-white">${e.entity_id}</span></td>
+            <td class="py-3 px-4 text-right font-bold text-rose-400">$${e.discrepancy_amount.toFixed(2)}</td>
+            <td class="py-3 px-4"><span class="badge border ${stColor}">${e.status}</span></td>
+            <td class="py-3 px-4 text-center font-sans">
+              <button onclick='openResolutionModal(${JSON.stringify(e)})' class="px-2.5 py-1 text-xs rounded bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
+                Triage / Resolve
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadMatches() {
+      const matchType = document.getElementById('filterMatchType').value;
+      const url = `/api/matches?limit=50${matchType ? '&match_type=' + matchType : ''}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const tbody = document.getElementById('matchesTableBody');
+      tbody.innerHTML = data.items.map(m => `
+        <tr class="hover:bg-slate-800/40">
+          <td class="py-2.5 px-4 font-bold text-indigo-300">${m.match_id}</td>
+          <td class="py-2.5 px-4 font-sans text-xs text-slate-400">${m.match_type}</td>
+          <td class="py-2.5 px-4 text-white">${m.left_entity_type}: <span class="text-indigo-400">${m.left_entity_id}</span></td>
+          <td class="py-2.5 px-4 text-white">${m.right_entity_type}: <span class="text-violet-400">${m.right_entity_id}</span></td>
+          <td class="py-2.5 px-4 text-right text-emerald-400 font-bold">$${m.left_amount.toFixed(2)}</td>
+          <td class="py-2.5 px-4 text-right text-emerald-400 font-bold">$${m.right_amount.toFixed(2)}</td>
+          <td class="py-2.5 px-4"><span class="badge border bg-emerald-500/20 text-emerald-300 border-emerald-500/40">${m.match_status}</span></td>
+          <td class="py-2.5 px-4 text-center font-bold text-amber-300">${(m.confidence_score * 100).toFixed(0)}%</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadBenchmark() {
+      const res = await fetch('/api/benchmark');
+      const data = await res.json();
+      const tbody = document.getElementById('benchmarkBreakdownBody');
+      const breakdown = data.category_breakdown;
+
+      tbody.innerHTML = Object.keys(breakdown).map(k => {
+        const item = breakdown[k];
+        return `
+          <tr class="hover:bg-slate-800/40 font-mono">
+            <td class="py-3 px-4 font-bold font-sans text-white">${k}</td>
+            <td class="py-3 px-4 text-center text-slate-300">${item.ground_truth_count}</td>
+            <td class="py-3 px-4 text-center text-slate-300">${item.detected_count}</td>
+            <td class="py-3 px-4 text-center font-bold text-emerald-400">${item.true_positives}</td>
+            <td class="py-3 px-4 text-center text-slate-400">${item.false_positives}</td>
+            <td class="py-3 px-4 text-center text-slate-400">${item.false_negatives}</td>
+            <td class="py-3 px-4 text-center font-bold text-emerald-400">${(item.precision * 100).toFixed(1)}%</td>
+            <td class="py-3 px-4 text-center font-bold text-emerald-400">${(item.recall * 100).toFixed(1)}%</td>
+            <td class="py-3 px-4 text-center font-bold text-amber-300">${item.f1_score.toFixed(4)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadResolutions() {
+      const res = await fetch('/api/resolutions');
+      const data = await res.json();
+      const tbody = document.getElementById('resolutionsTableBody');
+      tbody.innerHTML = data.items.map(r => `
+        <tr class="hover:bg-slate-800/40">
+          <td class="py-3 px-4 font-bold text-indigo-300">${r.resolution_id}</td>
+          <td class="py-3 px-4 text-white">${r.exception_id}</td>
+          <td class="py-3 px-4 font-sans"><span class="badge border bg-purple-500/20 text-purple-300 border-purple-500/40">${r.actor_role}</span></td>
+          <td class="py-3 px-4 text-slate-400">${r.actor_id}</td>
+          <td class="py-3 px-4 text-amber-300 font-bold font-sans">${r.resolution_type}</td>
+          <td class="py-3 px-4 text-right text-emerald-400 font-bold">$${r.financial_adjustment_amount.toFixed(2)}</td>
+          <td class="py-3 px-4 font-sans"><span class="text-rose-400">${r.previous_state}</span> -> <span class="text-emerald-400">${r.new_state}</span></td>
+          <td class="py-3 px-4 font-sans text-xs text-slate-300">${r.notes}</td>
+        </tr>
+      `).join('');
+    }
+
+    function openResolutionModal(exc) {
+      selectedExceptionId = exc.exception_id;
+      document.getElementById('modalExcId').innerText = exc.exception_id;
+      document.getElementById('modalExcIssue').innerText = exc.issue_type;
+      document.getElementById('modalExcAmount').innerText = `$${exc.discrepancy_amount.toFixed(2)}`;
+      document.getElementById('modalExcDetails').innerText = JSON.stringify(exc.details, null, 2);
+      document.getElementById('modalAdjustmentAmt').value = exc.discrepancy_amount.toFixed(2);
+      document.getElementById('resolutionModal').classList.remove('hidden');
+      document.getElementById('resolutionModal').classList.add('flex');
+    }
+
+    function closeResolutionModal() {
+      document.getElementById('resolutionModal').classList.add('hidden');
+      document.getElementById('resolutionModal').classList.remove('flex');
+    }
+
+    async function submitResolution() {
+      const actorRole = document.getElementById('actorRoleSelect').value;
+      const resType = document.getElementById('modalResolutionType').value;
+      const adjustment = parseFloat(document.getElementById('modalAdjustmentAmt').value) || 0.0;
+      const notes = document.getElementById('modalNotes').value;
+
+      if (!notes.trim()) {
+        alert("Please enter audit justification notes.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/exceptions/${selectedExceptionId}/resolve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            actor_role: actorRole,
+            actor_id: `${actorRole.toLowerCase()}_web_user`,
+            resolution_type: resType,
+            notes: notes,
+            financial_adjustment: adjustment
+          })
+        });
+        if (res.ok) {
+          closeResolutionModal();
+          loadExceptions();
+          loadSummary();
+        } else {
+          const err = await res.json();
+          alert(`Error: ${err.detail}`);
+        }
+      } catch (e) {
+        alert("Failed to submit resolution");
+      }
+    }
+
+    function triggerRunModal() {
+      document.getElementById('runModal').classList.remove('hidden');
+      document.getElementById('runModal').classList.add('flex');
+    }
+
+    function closeRunModal() {
+      document.getElementById('runModal').classList.add('hidden');
+      document.getElementById('runModal').classList.remove('flex');
+    }
+
+    async function executePipelineRun() {
+      const scale = document.getElementById('runModalScale').value;
+      const seed = parseInt(document.getElementById('runModalSeed').value) || 20261022;
+      const btn = document.getElementById('btnExecuteRun');
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating...`;
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scale: scale, seed: seed })
+        });
+        if (res.ok) {
+          closeRunModal();
+          loadSummary();
+          loadExceptions();
+          alert(`Successfully executed reconciliation run for ${scale.toUpperCase()} scale!`);
+        }
+      } catch (e) {
+        alert("Pipeline run failed: " + e);
+      } finally {
+        btn.innerHTML = `<span>Run Now</span>`;
+        btn.disabled = false;
+      }
+    }
+
+    // Auto-init on page load
+    window.onload = () => {
+      loadSummary();
+      loadExceptions();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+"""
+Domain enumerations for YottaFlex Payment Reconciliation & Exception Resolution Platform.
+Defines entity statuses, event types, anomaly types, actor roles, and resolution categories.
+"""
+from enum import Enum
+
+
+class Currency(str, Enum):
+    USD = "USD"
+    EUR = "EUR"
+    GBP = "GBP"
+    CAD = "CAD"
+
+
+class MerchantStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    SUSPENDED = "SUSPENDED"
+    TERMINATED = "TERMINATED"
+
+
+class OrderType(str, Enum):
+    PAYMENT = "PAYMENT"
+    REFUND = "REFUND"
+
+
+class PaymentOrderStatus(str, Enum):
+    PENDING = "PENDING"
+    AUTHORIZED = "AUTHORIZED"
+    CAPTURED = "CAPTURED"
+    FAILED = "FAILED"
+    REFUNDED = "REFUNDED"
+    PARTIALLY_REFUNDED = "PARTIALLY_REFUNDED"
+
+
+class PaymentAttemptStatus(str, Enum):
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
+    TIMED_OUT = "TIMED_OUT"
+
+
+class ProcessorEventType(str, Enum):
+    AUTHORIZATION = "AUTHORIZATION"
+    CAPTURE = "CAPTURE"
+    REFUND = "REFUND"
+    CHARGEBACK = "CHARGEBACK"
+
+
+class ProcessorEventStatus(str, Enum):
+    PROCESSED = "PROCESSED"
+    DUPLICATE_SKIPPED = "DUPLICATE_SKIPPED"
+    REJECTED = "REJECTED"
+
+
+class SettlementBatchStatus(str, Enum):
+    OPEN = "OPEN"
+    CLOSED = "CLOSED"
+    SETTLED = "SETTLED"
+    DISCREPANCY = "DISCREPANCY"
+
+
+class SettlementLineType(str, Enum):
+    CAPTURE = "CAPTURE"
+    REFUND = "REFUND"
+    CHARGEBACK = "CHARGEBACK"
+    ADJUSTMENT = "ADJUSTMENT"
+    FEE = "FEE"
+
+
+class BankTxType(str, Enum):
+    CREDIT = "CREDIT"
+    DEBIT = "DEBIT"
+
+
+class MatchType(str, Enum):
+    ORDER_TO_PROCESSOR = "ORDER_TO_PROCESSOR"
+    EVENT_TO_SETTLEMENT = "EVENT_TO_SETTLEMENT"
+    SETTLEMENT_TO_BANK = "SETTLEMENT_TO_BANK"
+
+
+class MatchStatus(str, Enum):
+    EXACT_MATCH = "EXACT_MATCH"
+    TOLERANCE_MATCH = "TOLERANCE_MATCH"
+    PARTIAL_MATCH = "PARTIAL_MATCH"
+    SUSPECTED_MISMATCH = "SUSPECTED_MISMATCH"
+
+
+class IssueType(str, Enum):
+    DUPLICATE_SETTLEMENT_LINE = "DUPLICATE_SETTLEMENT_LINE"
+    BANK_AMOUNT_FEE_MISMATCH = "BANK_AMOUNT_FEE_MISMATCH"
+    REFUND_BEFORE_CAPTURE = "REFUND_BEFORE_CAPTURE"
+    UNMATCHED_DROPPED_RECORD = "UNMATCHED_DROPPED_RECORD"
+    CURRENCY_MISMATCH = "CURRENCY_MISMATCH"
+    DUPLICATE_WEBHOOK_INGESTED = "DUPLICATE_WEBHOOK_INGESTED"
+    UNMATCHED_PROCESSOR_EVENT = "UNMATCHED_PROCESSOR_EVENT"
+    UNMATCHED_BANK_LINE = "UNMATCHED_BANK_LINE"
+    UNMATCHED_PAYMENT_ORDER = "UNMATCHED_PAYMENT_ORDER"
+    AMOUNT_TOLERANCE_EXCEEDED = "AMOUNT_TOLERANCE_EXCEEDED"
+
+
+class Severity(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
+
+class ExceptionStatus(str, Enum):
+    OPEN = "OPEN"
+    IN_REVIEW = "IN_REVIEW"
+    RESOLVED = "RESOLVED"
+    WAIVED = "WAIVED"
+
+
+class ActorRole(str, Enum):
+    OPERATIONS_ANALYST = "OPERATIONS_ANALYST"
+    RISK_COMPLIANCE = "RISK_COMPLIANCE"
+    SYSTEM_ADMIN = "SYSTEM_ADMIN"
+    CUSTOMER = "CUSTOMER"
+
+
+class ResolutionType(str, Enum):
+    AUTO_ADJUSTED = "AUTO_ADJUSTED"
+    MANUAL_MATCH = "MANUAL_MATCH"
+    WRITE_OFF = "WRITE_OFF"
+    ESCALATE_FRAUD = "ESCALATE_FRAUD"
+    REINGEST_EVENT = "REINGEST_EVENT"
+    ACCEPT_TOLERANCE = "ACCEPT_TOLERANCE"
+    REFUND_VOID = "REFUND_VOID"

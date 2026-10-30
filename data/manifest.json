@@ -1,0 +1,121 @@
+{
+  "seed": 20261022,
+  "scale": "starter",
+  "generated_at": "2026-10-22T00:00:00Z",
+  "files": {
+    "csv/merchants.csv": {
+      "row_count": 100,
+      "sha256": "58860813c782e48250e206c32999121eca69c0b52b9c00e3a4d2d1f6dd08195a",
+      "size_bytes": 9329
+    },
+    "json/merchants.json": {
+      "row_count": 100,
+      "sha256": "e03cdfa54690a6ddd1491256914ef63f2c19b6258242e4799110889dea8bae10",
+      "size_bytes": 28344
+    },
+    "csv/payment_orders.csv": {
+      "row_count": 2500,
+      "sha256": "db4aa73beacf3378018ff94ea83ff43dad878422ec53a6c4f5c139976d49decd",
+      "size_bytes": 336560
+    },
+    "json/payment_orders.json": {
+      "row_count": 2500,
+      "sha256": "af61bbdddf7e015a048798f9e19b10153b5c9c7555ff741a885762efcc343d5b",
+      "size_bytes": 1028768
+    },
+    "csv/payment_attempts.csv": {
+      "row_count": 2784,
+      "sha256": "f9c653359e384eab919a9a05cee589d7443750670904e88862bda880a97e5368",
+      "size_bytes": 326717
+    },
+    "json/payment_attempts.json": {
+      "row_count": 2784,
+      "sha256": "28c695f4843ed4c3a0eaa4d67bf21c4fa8e007f20b86ec4948bb08970b7fe7ed",
+      "size_bytes": 991227
+    },
+    "csv/processor_events.csv": {
+      "row_count": 2409,
+      "sha256": "336eba254cde6735dd6791e312527e750665608fbef7c69fa3942f77b6a89790",
+      "size_bytes": 479518
+    },
+    "json/processor_events.json": {
+      "row_count": 2409,
+      "sha256": "2dd2de4d39cc614645402567175bc70fa8c3a286d53c388877863c07e5139b38",
+      "size_bytes": 1281530
+    },
+    "csv/settlement_batches.csv": {
+      "row_count": 50,
+      "sha256": "d9dc00df41807d2f7370577a29a8104b914edd39ec53712bacb6b758431cd1fc",
+      "size_bytes": 8093
+    },
+    "json/settlement_batches.json": {
+      "row_count": 50,
+      "sha256": "c6f4c8de67bb13c6304e84b6163ab497aca35a3f71427dc67bf4c99e921af7c6",
+      "size_bytes": 23489
+    },
+    "csv/settlement_lines.csv": {
+      "row_count": 2400,
+      "sha256": "dbc66aaa5edf0ee565b36e173a8878fb01d2fe16feb225a165b8d6aa3d1324cd",
+      "size_bytes": 331378
+    },
+    "json/settlement_lines.json": {
+      "row_count": 2400,
+      "sha256": "ea58ca78b25acdf867c0845c321b43c7fc3f03707618260c2a350c1c92f8899d",
+      "size_bytes": 976835
+    },
+    "csv/bank_statement_lines.csv": {
+      "row_count": 252,
+      "sha256": "fc5c13aaacc2382d6e2fbfa88159c0732c2150cd6b833193f3c0059189fb4c9b",
+      "size_bytes": 41302
+    },
+    "json/bank_statement_lines.json": {
+      "row_count": 252,
+      "sha256": "20f2e5081eef51454e0ac6c021d45af5a8688f742b112099d9b398b9ce685653",
+      "size_bytes": 99902
+    },
+    "csv/reconciliation_matches.csv": {
+      "row_count": 4859,
+      "sha256": "475212364eec77a788b3fc4237d9003531ca0724dc66a2dc4cb2befeee08805d",
+      "size_bytes": 989672
+    },
+    "json/reconciliation_matches.json": {
+      "row_count": 4859,
+      "sha256": "4eefac7a562ee4fa529a6d5e95c7bc980228eb18af12129300e10d09b5d0998d",
+      "size_bytes": 2733851
+    },
+    "csv/exception_records.csv": {
+      "row_count": 14,
+      "sha256": "6d2c321d8480e58ba1b1ad2e9a9b24a64fa305f896a237b4cb999f783240fdcc",
+      "size_bytes": 5469
+    },
+    "json/exception_records.json": {
+      "row_count": 14,
+      "sha256": "4cdfd61b95f86d78ff3caec04d76d9e7272b949a99d5e52ae038e6867dedb511",
+      "size_bytes": 13184
+    },
+    "csv/resolutions.csv": {
+      "row_count": 2,
+      "sha256": "60fb1942f9008d8fdc1b5dff70d5c87a20e89bf5676bd8e466a115fdc17dc907",
+      "size_bytes": 519
+    },
+    "json/resolutions.json": {
+      "row_count": 2,
+      "sha256": "b83150af0c92031b22d0ab1866310c0de5400e7ce67290c750b8dd9f6d801fbc",
+      "size_bytes": 889
+    },
+    "csv/ground_truth.csv": {
+      "row_count": 14,
+      "sha256": "7ce3733c86f27380c1f843d1abab9f780066390c9b5593f6f1383f99a25ec328",
+      "size_bytes": 3227
+    },
+    "json/ground_truth.json": {
+      "row_count": 14,
+      "sha256": "d8743c7dd4f44348427f4f181f559a675348ec9f45704c3d933cd120f9e92b24",
+      "size_bytes": 5976
+    },
+    "sqlite/yottaflex_recon.db": {
+      "sha256": "4d3d56f83f88bd8cded5c4da3284a8cb1d2d2b13cec6444e8219a1bdf4492d76",
+      "size_bytes": 4530176
+    }
+  }
+}

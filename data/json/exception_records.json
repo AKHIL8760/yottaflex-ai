@@ -1,0 +1,292 @@
+[
+  {
+    "exception_id": "EXC-2026-000001",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "DUPLICATE_WEBHOOK_INGESTED",
+    "severity": "MEDIUM",
+    "status": "OPEN",
+    "entity_type": "ProcessorEvent",
+    "entity_id": "PRC-2026-00001112",
+    "related_entity_type": "PaymentOrder",
+    "related_entity_id": "PAY-2026-00001159",
+    "discrepancy_amount": 46.67,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "processor_reference": "ch_2026_44714258",
+      "idempotency_key": "IDEMP-ATT-PAY-2026-00001159-01-CAPTURE",
+      "ingested_at": "2026-10-10T06:48:03Z",
+      "reason": "Duplicate webhook received; skipped to guarantee idempotency"
+    },
+    "ground_truth_label": "DUPLICATE_WEBHOOK_INGESTED",
+    "details_json": "{\"processor_reference\": \"ch_2026_44714258\", \"idempotency_key\": \"IDEMP-ATT-PAY-2026-00001159-01-CAPTURE\", \"ingested_at\": \"2026-10-10T06:48:03Z\", \"reason\": \"Duplicate webhook received; skipped to guarantee idempotency\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000002",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "DUPLICATE_WEBHOOK_INGESTED",
+    "severity": "MEDIUM",
+    "status": "OPEN",
+    "entity_type": "ProcessorEvent",
+    "entity_id": "PRC-2026-00000420",
+    "related_entity_type": "PaymentOrder",
+    "related_entity_id": "PAY-2026-00000431",
+    "discrepancy_amount": 28.57,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "processor_reference": "ch_2026_28858402",
+      "idempotency_key": "IDEMP-ATT-PAY-2026-00000431-01-CAPTURE",
+      "ingested_at": "2026-10-04T10:50:21Z",
+      "reason": "Duplicate webhook received; skipped to guarantee idempotency"
+    },
+    "ground_truth_label": "DUPLICATE_WEBHOOK_INGESTED",
+    "details_json": "{\"processor_reference\": \"ch_2026_28858402\", \"idempotency_key\": \"IDEMP-ATT-PAY-2026-00000431-01-CAPTURE\", \"ingested_at\": \"2026-10-04T10:50:21Z\", \"reason\": \"Duplicate webhook received; skipped to guarantee idempotency\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000003",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "UNMATCHED_DROPPED_RECORD",
+    "severity": "CRITICAL",
+    "status": "OPEN",
+    "entity_type": "PaymentOrder",
+    "entity_id": "PAY-2026-00000191",
+    "related_entity_type": null,
+    "related_entity_id": null,
+    "discrepancy_amount": 68.86,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "order_amount": 68.86,
+      "currency": "USD",
+      "status": "CAPTURED",
+      "reason": "Payment order status is CAPTURED but no processor event was received (silently dropped upstream)"
+    },
+    "ground_truth_label": "UNMATCHED_DROPPED_RECORD",
+    "details_json": "{\"order_amount\": 68.86, \"currency\": \"USD\", \"status\": \"CAPTURED\", \"reason\": \"Payment order status is CAPTURED but no processor event was received (silently dropped upstream)\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000004",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "UNMATCHED_DROPPED_RECORD",
+    "severity": "CRITICAL",
+    "status": "OPEN",
+    "entity_type": "PaymentOrder",
+    "entity_id": "PAY-2026-00001181",
+    "related_entity_type": null,
+    "related_entity_id": null,
+    "discrepancy_amount": 105.9,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "order_amount": 105.9,
+      "currency": "USD",
+      "status": "CAPTURED",
+      "reason": "Payment order status is CAPTURED but no processor event was received (silently dropped upstream)"
+    },
+    "ground_truth_label": "UNMATCHED_DROPPED_RECORD",
+    "details_json": "{\"order_amount\": 105.9, \"currency\": \"USD\", \"status\": \"CAPTURED\", \"reason\": \"Payment order status is CAPTURED but no processor event was received (silently dropped upstream)\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000005",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "REFUND_BEFORE_CAPTURE",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "PaymentOrder",
+    "entity_id": "PAY-2026-00001407",
+    "related_entity_type": "PaymentOrder",
+    "related_entity_id": "PAY-2026-00000470",
+    "discrepancy_amount": 41.13,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "refund_timestamp": "2026-10-04T17:47:26Z",
+      "parent_capture_timestamp": "2026-10-04T19:47:26Z",
+      "reason": "Refund event timestamp precedes original payment capture timestamp"
+    },
+    "ground_truth_label": "REFUND_BEFORE_CAPTURE",
+    "details_json": "{\"refund_timestamp\": \"2026-10-04T17:47:26Z\", \"parent_capture_timestamp\": \"2026-10-04T19:47:26Z\", \"reason\": \"Refund event timestamp precedes original payment capture timestamp\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000006",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "REFUND_BEFORE_CAPTURE",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "PaymentOrder",
+    "entity_id": "PAY-2026-00001561",
+    "related_entity_type": "PaymentOrder",
+    "related_entity_id": "PAY-2026-00001429",
+    "discrepancy_amount": 17.76,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "refund_timestamp": "2026-10-12T12:25:20Z",
+      "parent_capture_timestamp": "2026-10-12T14:25:20Z",
+      "reason": "Refund event timestamp precedes original payment capture timestamp"
+    },
+    "ground_truth_label": "REFUND_BEFORE_CAPTURE",
+    "details_json": "{\"refund_timestamp\": \"2026-10-12T12:25:20Z\", \"parent_capture_timestamp\": \"2026-10-12T14:25:20Z\", \"reason\": \"Refund event timestamp precedes original payment capture timestamp\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000007",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "DUPLICATE_SETTLEMENT_LINE",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "SettlementLine",
+    "entity_id": "STL-SET-2026-000007-013-DUP",
+    "related_entity_type": "ProcessorEvent",
+    "related_entity_id": "PRC-2026-00000301",
+    "discrepancy_amount": 393.79,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "batch_id": "SET-2026-000007",
+      "original_line_id": "STL-SET-2026-000007-013",
+      "duplicate_line_id": "STL-SET-2026-000007-013-DUP",
+      "reason": "Duplicate settlement line detected for processor event PRC-2026-00000301"
+    },
+    "ground_truth_label": "DUPLICATE_SETTLEMENT_LINE",
+    "details_json": "{\"batch_id\": \"SET-2026-000007\", \"original_line_id\": \"STL-SET-2026-000007-013\", \"duplicate_line_id\": \"STL-SET-2026-000007-013-DUP\", \"reason\": \"Duplicate settlement line detected for processor event PRC-2026-00000301\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000008",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "DUPLICATE_SETTLEMENT_LINE",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "SettlementLine",
+    "entity_id": "STL-SET-2026-000048-025-DUP",
+    "related_entity_type": "ProcessorEvent",
+    "related_entity_id": "PRC-2026-00002281",
+    "discrepancy_amount": 40.18,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "batch_id": "SET-2026-000048",
+      "original_line_id": "STL-SET-2026-000048-025",
+      "duplicate_line_id": "STL-SET-2026-000048-025-DUP",
+      "reason": "Duplicate settlement line detected for processor event PRC-2026-00002281"
+    },
+    "ground_truth_label": "DUPLICATE_SETTLEMENT_LINE",
+    "details_json": "{\"batch_id\": \"SET-2026-000048\", \"original_line_id\": \"STL-SET-2026-000048-025\", \"duplicate_line_id\": \"STL-SET-2026-000048-025-DUP\", \"reason\": \"Duplicate settlement line detected for processor event PRC-2026-00002281\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000009",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "CURRENCY_MISMATCH",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "SettlementLine",
+    "entity_id": "STL-SET-2026-000020-029",
+    "related_entity_type": "PaymentOrder",
+    "related_entity_id": "PAY-2026-00000976",
+    "discrepancy_amount": 51.49,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "order_currency": "USD",
+      "settlement_currency": "EUR",
+      "reason": "Settlement currency EUR does not match order currency USD"
+    },
+    "ground_truth_label": "CURRENCY_MISMATCH",
+    "details_json": "{\"order_currency\": \"USD\", \"settlement_currency\": \"EUR\", \"reason\": \"Settlement currency EUR does not match order currency USD\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000010",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "CURRENCY_MISMATCH",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "SettlementLine",
+    "entity_id": "STL-SET-2026-000032-037",
+    "related_entity_type": "PaymentOrder",
+    "related_entity_id": "PAY-2026-00001581",
+    "discrepancy_amount": 11.79,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "order_currency": "USD",
+      "settlement_currency": "EUR",
+      "reason": "Settlement currency EUR does not match order currency USD"
+    },
+    "ground_truth_label": "CURRENCY_MISMATCH",
+    "details_json": "{\"order_currency\": \"USD\", \"settlement_currency\": \"EUR\", \"reason\": \"Settlement currency EUR does not match order currency USD\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000011",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "BANK_AMOUNT_FEE_MISMATCH",
+    "severity": "MEDIUM",
+    "status": "RESOLVED",
+    "entity_type": "BankStatementLine",
+    "entity_id": "BANK-2026-000033",
+    "related_entity_type": "SettlementBatch",
+    "related_entity_id": "SET-2026-000033",
+    "discrepancy_amount": 15.0,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "bank_amount": 4740.64,
+      "batch_total_net": 4755.64,
+      "variance": 15.0,
+      "reason": "Bank statement amount differs from batch payout by $15.00 (wire fee deduction)"
+    },
+    "ground_truth_label": "BANK_AMOUNT_FEE_MISMATCH",
+    "details_json": "{\"bank_amount\": 4740.64, \"batch_total_net\": 4755.64, \"variance\": 15.0, \"reason\": \"Bank statement amount differs from batch payout by $15.00 (wire fee deduction)\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000012",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "BANK_AMOUNT_FEE_MISMATCH",
+    "severity": "MEDIUM",
+    "status": "RESOLVED",
+    "entity_type": "BankStatementLine",
+    "entity_id": "BANK-2026-000045",
+    "related_entity_type": "SettlementBatch",
+    "related_entity_id": "SET-2026-000045",
+    "discrepancy_amount": 10.0,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "bank_amount": 3227.62,
+      "batch_total_net": 3237.62,
+      "variance": 10.0,
+      "reason": "Bank statement amount differs from batch payout by $10.00 (wire fee deduction)"
+    },
+    "ground_truth_label": "BANK_AMOUNT_FEE_MISMATCH",
+    "details_json": "{\"bank_amount\": 3227.62, \"batch_total_net\": 3237.62, \"variance\": 10.0, \"reason\": \"Bank statement amount differs from batch payout by $10.00 (wire fee deduction)\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000013",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "UNMATCHED_BANK_LINE",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "BankStatementLine",
+    "entity_id": "BANK-2026-990000",
+    "related_entity_type": null,
+    "related_entity_id": null,
+    "discrepancy_amount": 2896.14,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "amount": 2896.14,
+      "currency": "USD",
+      "narrative": "UNKNOWN WIRE DEPOSIT / REF NONEXISTENT-0000",
+      "reason": "Unmatched incoming bank deposit with no corresponding settlement batch"
+    },
+    "ground_truth_label": "UNMATCHED_BANK_LINE",
+    "details_json": "{\"amount\": 2896.14, \"currency\": \"USD\", \"narrative\": \"UNKNOWN WIRE DEPOSIT / REF NONEXISTENT-0000\", \"reason\": \"Unmatched incoming bank deposit with no corresponding settlement batch\"}"
+  },
+  {
+    "exception_id": "EXC-2026-000014",
+    "reconciliation_run_id": "RUN-20261022-starter",
+    "issue_type": "UNMATCHED_BANK_LINE",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "entity_type": "BankStatementLine",
+    "entity_id": "BANK-2026-990001",
+    "related_entity_type": null,
+    "related_entity_id": null,
+    "discrepancy_amount": 4907.93,
+    "detected_at": "2026-10-22T18:00:00Z",
+    "details": {
+      "amount": 4907.93,
+      "currency": "USD",
+      "narrative": "UNKNOWN WIRE DEPOSIT / REF NONEXISTENT-0001",
+      "reason": "Unmatched incoming bank deposit with no corresponding settlement batch"
+    },
+    "ground_truth_label": "UNMATCHED_BANK_LINE",
+    "details_json": "{\"amount\": 4907.93, \"currency\": \"USD\", \"narrative\": \"UNKNOWN WIRE DEPOSIT / REF NONEXISTENT-0001\", \"reason\": \"Unmatched incoming bank deposit with no corresponding settlement batch\"}"
+  }
+]

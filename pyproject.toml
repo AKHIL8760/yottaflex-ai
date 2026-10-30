@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yottaflex-recon"
+version = "1.0.0"
+description = "Enterprise Multi-Way Payment Reconciliation & Exception Resolution Platform"
+authors = [{ name = "AI Forward Deployed Engineer", email = "fde@yottaflex.ai" }]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+    "jinja2>=3.1.0",
+    "tabulate>=0.9.0",
+    "click>=8.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+yottaflex-recon = "src.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

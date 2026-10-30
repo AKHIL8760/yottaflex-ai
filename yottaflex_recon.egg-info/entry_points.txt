@@ -1,0 +1,2 @@
+[console_scripts]
+yottaflex-recon = src.cli:main

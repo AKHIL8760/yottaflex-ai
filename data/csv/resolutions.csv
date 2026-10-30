@@ -1,0 +1,3 @@
+resolution_id,exception_id,actor_role,actor_id,resolution_type,notes,financial_adjustment_amount,previous_state,new_state,resolved_at
+RES-2026-000001,EXC-2026-000011,SYSTEM_ADMIN,AUTO_POLICY_ENGINE,AUTO_ADJUSTED,Auto-applied bank wire expense adjustment of $15.00 per treasury policy.,15.0,OPEN,RESOLVED,2026-10-22T18:00:00Z
+RES-2026-000002,EXC-2026-000012,SYSTEM_ADMIN,AUTO_POLICY_ENGINE,AUTO_ADJUSTED,Auto-applied bank wire expense adjustment of $10.00 per treasury policy.,10.0,OPEN,RESOLVED,2026-10-22T18:00:00Z
